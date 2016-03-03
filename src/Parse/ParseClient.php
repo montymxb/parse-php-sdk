@@ -139,6 +139,7 @@ final class ParseClient
      * @param string $serverUrl     New Host name to use
      * @param string $apiVersion    New api version to use or null
      *
+     * @author montymxb
      */
     public static function setServer($serverUrl,$apiVersion) {
         self::$hostName     = $serverUrl;
