@@ -20,9 +20,12 @@ final class ParseClient
     private static $apiVersion = '1';
 
     /**
-     *  API Server Host Address.
+     *  The remote Parse Server to communicate with
+     *
+     * @var string
+     *
      */
-    private static $hostName = 'https://api.parse.com';
+    private static $serverURL = 'https://api.parse.com';
 
     /**
      * The application id.
@@ -92,7 +95,7 @@ final class ParseClient
      *
      * @var string
      */
-    const VERSION_STRING = 'php1.1.10';
+    const VERSION_STRING = 'php1.2.0';
 
     /**
      * Parse\Client::initialize, must be called before using Parse features.
@@ -101,8 +104,7 @@ final class ParseClient
      * @param string $rest_key             Parse REST API Key
      * @param string $master_key           Parse Master Key
      * @param bool   $enableCurlExceptions Enable or disable Parse curl exceptions
-     * @param null   $email                Parse Account Email
-     * @param null   $password             Parse Account Password
+     * @param string $account_key          An account key from Parse.com can enable creating apps via API.
      *
      * @throws Exception
      */
@@ -136,13 +138,18 @@ final class ParseClient
     }
 
     /**
-     * @param string $serverUrl     New Host name to use
-     * @param string $apiVersion    New api version to use or null
+     * @param string $serverUrl     The remote server url
+     * @param string $apiVersion    The mount path for the particular api being used
+     *
+     * @throws \Exception
      *
      * @author montymxb
      */
-    public static function setServer($serverUrl,$apiVersion) {
-        self::$hostName     = $serverUrl;
+    public static function setServerURL($serverUrl,$apiVersion) {
+        if (!$serverUrl) {
+            throw new Exception('Invalid Server URL.');
+        }
+        self::$serverURL    = $serverUrl;
         self::$apiVersion   = $apiVersion;
     }
 
@@ -311,11 +318,11 @@ final class ParseClient
 
         if(self::$apiVersion != null) {
             // sever with api version
-            $url = self::$hostName . '/' . self::$apiVersion . '/' . ltrim($relativeUrl, '/');
+            $url = self::$serverURL . '/' . self::$apiVersion . '/' . ltrim($relativeUrl, '/');
 
         } else {
             // server without api version
-            $url = self::$hostName . '/' . ltrim($relativeUrl, '/');
+            $url = self::$serverURL . '/' . ltrim($relativeUrl, '/');
 
         }
 
@@ -508,7 +515,7 @@ final class ParseClient
      */
     public static function getAPIUrl()
     {
-        return self::$hostName.'/' . !self::$apiVersion ? '' : self::$apiVersion . '/';
+        return self::$serverURL.'/' . !self::$apiVersion ? '' : self::$apiVersion . '/';
     }
 
     /**
