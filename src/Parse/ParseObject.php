@@ -1225,9 +1225,6 @@ class ParseObject implements Encodable
          */
 
         if (!$className && isset($this->estimatedData[$key])) {
-
-            echo "No class name & proper data is set<br/>";
-
             $object = $this->estimatedData[$key];
             if ($object instanceof ParseRelation) {
                 $relation->setTargetClass($object->getTargetClass());
