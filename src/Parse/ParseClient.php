@@ -25,7 +25,14 @@ final class ParseClient
      * @var string
      *
      */
-    private static $serverURL = 'https://api.parse.com';
+    private static $serverURL = 'https://api.parse.com/';
+
+    /**
+     * The mount path for the current parse server
+     *
+     * @var string
+     */
+    private static $mountPath = "1/";
 
     /**
      * The application id.
@@ -138,19 +145,23 @@ final class ParseClient
     }
 
     /**
+     * ParseClient::setServerURL, to change the Parse Server address & mount path for this app
      * @param string $serverUrl     The remote server url
-     * @param string $apiVersion    The mount path for the particular api being used
+     * @param string $mountPath     The mount path for this server
      *
      * @throws \Exception
      *
-     * @author montymxb
      */
-    public static function setServerURL($serverUrl,$apiVersion) {
-        if (!$serverUrl) {
+    public static function setServerURL($serverURL, $mountPath) {
+        if (!$serverURL) {
             throw new Exception('Invalid Server URL.');
         }
-        self::$serverURL    = $serverUrl;
-        self::$apiVersion   = $apiVersion;
+        if( !$mountPath) {
+            throw new Exception('Invalid Mount Path.');
+        }
+
+        self::$serverURL = rtrim($serverURL,'/');
+        self::$mountPath = trim($mountPath,'/') . '/';
     }
 
     /**
@@ -315,17 +326,7 @@ final class ParseClient
             self::assertParseInitialized();
             $headers = self::_getRequestHeaders($sessionToken, $useMasterKey);
         }
-
-        if(self::$apiVersion != null) {
-            // sever with api version
-            $url = self::$serverURL . '/' . self::$apiVersion . '/' . ltrim($relativeUrl, '/');
-
-        } else {
-            // server without api version
-            $url = self::$serverURL . '/' . ltrim($relativeUrl, '/');
-
-        }
-
+        $url = self::$serverURL.'/'.self::$mountPath.ltrim($relativeUrl, '/');
         if ($method === 'GET' && !empty($data)) {
             $url .= '?'.http_build_query($data);
         }
@@ -515,7 +516,17 @@ final class ParseClient
      */
     public static function getAPIUrl()
     {
-        return self::$serverURL.'/' . !self::$apiVersion ? '' : self::$apiVersion . '/';
+        return self::$serverURL.'/'.self::$mountPath;
+    }
+
+    /**
+     * Get remote Parse API mount path
+     *
+     * @return string
+     */
+    public static function getMountPath()
+    {
+        return self::$mountPath;
     }
 
     /**
