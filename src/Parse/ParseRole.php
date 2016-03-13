@@ -70,7 +70,7 @@ class ParseRole extends ParseObject
      */
     public function getUsers()
     {
-        return $this->getRelation('users');
+        return $this->getRelation('users','_User');
     }
 
     /**
@@ -82,7 +82,7 @@ class ParseRole extends ParseObject
      */
     public function getRoles()
     {
-        return $this->getRelation('roles');
+        return $this->getRelation('roles','_Role');
     }
 
     public function save($useMasterKey = false)

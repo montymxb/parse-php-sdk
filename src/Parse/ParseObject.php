@@ -760,21 +760,20 @@ class ParseObject implements Encodable
     }
 
 
-    public static function deleteAll($className, $useMasterKey = false) {
+    public static function deleteAllObjects($className) {
         if(!isset($className)) {
             return;
         }
-        $sessionToken = null;
-        if (ParseUser::getCurrentUser()) {
-            $sessionToken = ParseUser::getCurrentUser()->getSessionToken();
-        }
-        ParseClient::_request(
-            'DELETE',
-            'classes/'.$className,
-            $sessionToken,
-            null,
-            $useMasterKey
-        );
+        // fetch and delete ALL objects of this class to free it up
+        $query = new ParseQuery($className);
+        $limit = 1000;
+        $query->limit($limit);
+        while($foundObjs = $query->find(true)) {
+            ParseObject::destroyAll($foundObjs, true);
+
+            $limit+=1000;
+            $query->limit($limit);
+        };
     }
 
     /**
