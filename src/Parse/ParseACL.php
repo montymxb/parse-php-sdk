@@ -81,15 +81,16 @@ class ParseACL implements Encodable
             if (!is_string($id)) {
                 throw new Exception('Tried to create an ACL with an invalid userId.');
             }
+
             foreach ($permissions as $accessType => $value) {
                 if ($accessType !== 'read' && $accessType !== 'write') {
                     throw new Exception(
-                        'Tried to create an ACL with an invalid permission type.'
+                        'Tried to create an ACL with an invalid permission type: "' . $accessType . '"'
                     );
                 }
                 if (!is_bool($value)) {
                     throw new Exception(
-                        'Tried to create an ACL with an invalid permission value.'
+                        'Tried to create an ACL with an invalid permission value: "' . $value .'"'
                     );
                 }
                 $acl->setAccess($accessType, $id, $value);
