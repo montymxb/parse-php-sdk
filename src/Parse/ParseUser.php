@@ -335,13 +335,10 @@ class ParseUser extends ParseObject
     public static function getCurrentUser()
     {
         if (static::$currentUser instanceof self) {
-
-            echo "Using static user";
-
             return static::$currentUser;
         }
-        if (isset($userData['id']) && isset($userData['_sessionToken'])) {
 
+        if (isset($userData['id']) && isset($userData['_sessionToken'])) {
             $user = static::create('_User', $userData['id']);
             unset($userData['id']);
             $user->_sessionToken = $userData['_sessionToken'];
@@ -352,22 +349,15 @@ class ParseUser extends ParseObject
             $user->_opSetQueue = [];
             static::$currentUser = $user;
 
-            echo "Reloading user";
-
             return $user;
         }
 
         // perform an additional check in our storage
         if(($storage = ParseClient::getStorage()) != null && $storage->get('user') != null) {
-
             static::$currentUser = $storage->get('user');
-
-            echo "Extracting user from storage";
 
             return static::$currentUser;
         }
-
-        echo "No user, return null...";
 
         // no user, return null
         return null;
