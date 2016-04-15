@@ -334,10 +334,9 @@ class ParseUser extends ParseObject
      */
     public static function getCurrentUser()
     {
-
-        echo "Polling for the current user";
-
         if (static::$currentUser instanceof self) {
+
+            echo "Using static user";
 
             return static::$currentUser;
         }
@@ -353,6 +352,8 @@ class ParseUser extends ParseObject
             $user->_opSetQueue = [];
             static::$currentUser = $user;
 
+            echo "Reloading user";
+
             return $user;
         }
 
@@ -361,8 +362,12 @@ class ParseUser extends ParseObject
 
             static::$currentUser = $storage->get('user');
 
+            echo "Extracting user from storage";
+
             return static::$currentUser;
         }
+
+        echo "No user, return null...";
 
         // no user, return null
         return null;
