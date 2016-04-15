@@ -334,6 +334,9 @@ class ParseUser extends ParseObject
      */
     public static function getCurrentUser()
     {
+
+        echo "Polling for the current user";
+
         if (static::$currentUser instanceof self) {
 
             return static::$currentUser;
