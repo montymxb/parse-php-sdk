@@ -151,6 +151,9 @@ class ParseFile implements Encodable
     {
         $contents = file_get_contents($path, 'rb');
 
+        // replace name whitespace with _'s
+        $name = preg_replace('/\s/', '_', $name);
+
         return static::createFromData($contents, $name, $mimeType);
     }
 
