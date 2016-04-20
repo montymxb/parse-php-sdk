@@ -245,6 +245,38 @@ class ParseQuery
     }
 
     /**
+     * Add a constraint to the query that requires a particular key's value to
+     * end with the provided value.
+     *
+     * @param string $key   The key to check.
+     * @param mixed  $value The substring that the value must end with.
+     *
+     * @return ParseQuery Returns this query, so you can chain this call.
+     */
+    public function endsWith($key, $value)
+    {
+        $this->addCondition($key, '$regex', $this->quote($value).'$');
+
+        return $this;
+    }
+
+    /**
+     * Add a constraint to the query that requires a particular key's value to
+     * match the provided regex
+     *
+     * @param string $key       The key to check.
+     * @param mixed  $value     The regex to match.
+     *
+     * @return ParseQuery Returns this query, so you can chain this call.
+     */
+    public function matchesRegex($key, $value)
+    {
+        $this->addCondition($key, '$regex', $this->quote($value));
+
+        return $this;
+    }
+
+    /**
      * Returns an associative array of the query constraints.
      *
      * @return array
