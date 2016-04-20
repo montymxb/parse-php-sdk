@@ -262,7 +262,7 @@ class ParseFile implements Encodable
         return $response;
     }
 
-    private function getMimeTypeForExtension($extension)
+    public function getMimeTypeForExtension($extension)
     {
         $knownTypes = [
             'ai'      => 'application/postscript',
