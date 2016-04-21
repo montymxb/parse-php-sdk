@@ -140,8 +140,6 @@ class ParseRelation
     public function getQuery()
     {
 
-        //echo "GETTING NEW QUERY, with ClassName: " . $this->targetClassName . "<br/>";
-
         $query = new ParseQuery($this->targetClassName);
         $query->relatedTo('object', $this->parent->_toPointer());
         $query->relatedTo('key', $this->key);
