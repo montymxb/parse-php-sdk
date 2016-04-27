@@ -375,11 +375,18 @@ class ParseQuery
      * Execute a find query and return the results.
      *
      * @param bool $useMasterKey
+     * @param bool $findAll
      *
      * @return ParseObject[]
      */
-    public function find($useMasterKey = false)
+    public function find($useMasterKey = false, $findAll = false)
     {
+        if($findAll) {
+            // perform an exhaustive find
+            return $this->findAll($useMasterKey);
+
+        }
+
         $sessionToken = null;
         if (ParseUser::getCurrentUser()) {
             $sessionToken = ParseUser::getCurrentUser()->getSessionToken();
@@ -400,6 +407,47 @@ class ParseQuery
         }
 
         return $output;
+    }
+
+    /**
+     * Iterates over 'find' and increases our 'skip' until we have exhausted our search
+     *
+     * @param bool $useMasterKey
+     *
+     * @return ParseObject[]
+     */
+    private function findAll($useMasterKey = false) {
+        $complete = false;
+        $objects = [];
+
+        if($this->limit === -1) {
+            // 1000 default limit
+            $this->limit = 1000;
+
+        }
+
+        // search until we have nothing more to find
+        while(!$complete) {
+            // find objects
+            $found = $this->find($useMasterKey);
+            // add what we found
+            $objects = array_merge($objects, $found);
+            // get our count
+            $count = count($found);
+
+            if($count < $this->limit) {
+                // limit reached, mark that we're complete
+                $complete = true;
+
+            } else {
+                // skip by our limit forward
+                $this->skip += $this->limit;
+
+            }
+        }
+
+        // return everything we found
+        return $objects;
     }
 
     /**
