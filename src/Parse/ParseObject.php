@@ -307,6 +307,15 @@ class ParseObject implements Encodable
                 'Must use setArray() or setAssociativeArray() for this value.'
             );
         }
+
+        // html encode this value
+        if(is_string($value)) {
+            // encode all < > tags, nullifying any injections
+            $value = preg_replace('/</', '&lt;', $value);
+            $value = preg_replace('/>/', '&gt;', $value);
+
+        }
+
         $this->_performOperation($key, new SetOperation($value));
     }
 
