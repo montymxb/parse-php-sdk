@@ -52,8 +52,10 @@ class ParseFile implements Encodable
             return $this->data;
         }
         if (!$this->url) {
-            throw new ParseException('Cannot retrieve data for unsaved ParseFile.');
+            throw new ParseException('Cannot retrieve data for unsaved file or the file you uploaded was empty.');
+
         }
+        
         $this->data = $this->download();
 
         return $this->data;

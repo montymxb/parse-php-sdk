@@ -91,7 +91,8 @@ class ParseUser extends ParseObject
      * session so that you can access the user using ParseUser::getCurrentUser();.
      * You may pass false to only signup & login the user if you wish.
      *
-     * @param boolean $makeCurrent
+     * @throws ParseException
+     * @param boolean $makeCurrent - Indicates whether or not this user should be made the currently logged in user, default is true
      *
      */
     public function signUp($makeCurrent = true)
@@ -337,7 +338,12 @@ class ParseUser extends ParseObject
         if (static::$currentUser instanceof self) {
             return static::$currentUser;
         }
-
+        $storage = ParseClient::getStorage();
+        $userData = $storage->get('user');
+        if ($userData instanceof self) {
+            static::$currentUser = $userData;
+            return $userData;
+        }
         if (isset($userData['id']) && isset($userData['_sessionToken'])) {
             $user = static::create('_User', $userData['id']);
             unset($userData['id']);
@@ -348,19 +354,9 @@ class ParseUser extends ParseObject
             }
             $user->_opSetQueue = [];
             static::$currentUser = $user;
-
             return $user;
         }
-
-        // perform an additional check in our storage
-        if(($storage = ParseClient::getStorage()) != null && $storage->get('user') != null) {
-            static::$currentUser = $storage->get('user');
-
-            return static::$currentUser;
-        }
-
-        // no user, return null
-        return null;
+        return;
     }
 
     /**

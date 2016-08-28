@@ -308,7 +308,7 @@ class ParseObject implements Encodable
             );
         }
 
-        // html encode this value
+        // html encode this value, to prevent possible XSS
         if(is_string($value)) {
             // encode all < > tags, nullifying any injections
             $value = preg_replace('/</', '&lt;', $value);
