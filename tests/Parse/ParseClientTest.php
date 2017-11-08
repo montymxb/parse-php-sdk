@@ -58,33 +58,6 @@ class ParseClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group client-not-initialized
-     */
-    public function testAppNotNotInitialized()
-    {
-        $this->setExpectedException(
-            '\Exception',
-            'You must call ParseClient::initialize(..., $accountKey) before making any app requests. '.
-            'Your account key must not be null or empty.'
-        );
-
-        ParseClient::initialize(
-            null,
-            null,
-            null
-        );
-
-        ParseClient::_request(
-            '',
-            '',
-            null,
-            null,
-            false,
-            true
-        );
-    }
-
-    /**
      * @group client-init
      */
     public function testInitialize()
